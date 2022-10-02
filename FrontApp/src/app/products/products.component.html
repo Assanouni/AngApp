@@ -1,1 +1,33 @@
-<p>products works!</p>
+<div class="container mt-3">
+
+  <ng-template #errors>
+    <div class="text-danger">
+      {{ErrorMessage}}
+    </div>
+  </ng-template>
+
+  <div class="card" *ngIf="products; else errors ">
+    <div class="card-header">Products </div>
+    <div class="card-body">
+     <table class="table">
+      <thead>
+        <th  scope="col">ID</th>
+        <th  scope="col">Label</th>
+        <th  scope="col">Price</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products">
+          <td  scope="row">{{product.id }}</td>
+          <td>{{product.label }}</td>
+          <td>{{product.price }}</td>
+          <td>
+            <button (click)="DeleteProduct(product)" class="btn btn-danger">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+     </table>
+    </div>
+  </div>
+</div>
