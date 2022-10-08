@@ -21,6 +21,9 @@
           <td>{{product.label }}</td>
           <td>{{product.price }}</td>
           <td>
+            <i (click)="PromotProduct(product)" [ngClass]="product.isPromotion ? 'bi bi-heart-fill text-danger' : 'bi bi-heart'"></i>
+          </td>
+          <td>
             <button (click)="DeleteProduct(product)" class="btn btn-danger">
               <i class="bi bi-trash"></i>
             </button>

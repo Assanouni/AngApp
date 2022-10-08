@@ -17,9 +17,19 @@ export class ProductsComponent implements OnInit {
    this.getAllProducts();
   }
 
-  DeleteProduct(p:any){
-    let index = this.products.indexOf(p);
-    this.products.splice(index,1);
+  DeleteProduct(p:Product){
+    
+    if(confirm("Are you sure you wana delete it ?"))
+      this.productService.deleteProduct(p.id).subscribe(
+        {
+          next : ()=> this.products.splice(this.products.indexOf(p),1)
+          ,error : (error)=>{
+            this.ErrorMessage = error;
+          },complete : ()=>{
+            console.log("Completed")
+          }
+        }
+    )
   }
 
   getAllProducts(){
@@ -32,6 +42,17 @@ export class ProductsComponent implements OnInit {
         },complete :()=>{
             console.log("completed")
         }
+      }
+    )
+  }
+
+  PromotProduct(prd : Product ){
+    let promo = prd.isPromotion;
+    this.productService.PromoteProduct(prd.id).subscribe(
+      {
+        next : ()=> prd.isPromotion = !promo,
+        error : (error)=> this.ErrorMessage = error,
+        complete : ()=> console.log("Completed")
       }
     )
   }
