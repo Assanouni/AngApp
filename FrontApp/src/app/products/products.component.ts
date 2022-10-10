@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Product } from '../model/Product';
 import { ProductService } from '../services/product.service';
 
@@ -10,11 +11,18 @@ import { ProductService } from '../services/product.service';
 export class ProductsComponent implements OnInit {
   products! : Array<Product>;
   ErrorMessage : any;
+  searchModel! : FormGroup;
+  pageSize : number = 5;
+  currentPage : number = 0;
+  totalPages : number = 10;
 
-  constructor(private productService : ProductService) { }
+  constructor(private productService : ProductService, private fb:FormBuilder) { }
 
   ngOnInit(): void {
-   this.getAllProducts();
+   this. GetAllPages();
+   this.searchModel = this.fb.group({
+    keyword : this.fb.control(null)
+   })
   }
 
   DeleteProduct(p:Product){
@@ -55,5 +63,38 @@ export class ProductsComponent implements OnInit {
         complete : ()=> console.log("Completed")
       }
     )
+  }
+
+  HandleSearch(){
+    this.productService.SearchByLabel(this.searchModel.value.keyword,this.pageSize,this.currentPage).subscribe(
+      {
+        next : (data)=> 
+        {
+          this.products = data.products,
+          this.totalPages = data.totalPages,
+          this.currentPage = data.pageIndex
+        },
+        error :(error)=> console.log(error)
+      }
+    )
+  }
+
+  GetAllPages(){
+    this.productService.GetPageProducts(this.pageSize,this.currentPage).subscribe(
+      {
+        next : (data)=>{
+          console.log(data);
+          this.products = data.products,
+          this.totalPages = data.totalPages,
+          this.currentPage = data.pageIndex
+        },
+        error : (error)=> console.log(error)
+      }
+    )
+  }
+  GotoPage(index:number){
+    this.currentPage = index;
+    this.HandleSearch();
+    
   }
 }
